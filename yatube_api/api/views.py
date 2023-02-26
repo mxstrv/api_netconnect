@@ -1,12 +1,11 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import filters
-from rest_framework.response import Response
 
-from posts.models import Post, Group, Comment, Follow, User
+from posts.models import Post, Group, Comment, Follow
 
 from .serializers import PostSerializer, GroupSerializer
 from .serializers import CommentSerializer, FollowSerializer
@@ -55,29 +54,10 @@ class FollowViewSet(viewsets.ModelViewSet):
     pagination_class = None
     filter_backends = (filters.SearchFilter,)
     search_fields = ('^following__username',)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = self.request.user.id
-        following = get_object_or_404(
-            User,
-            username=serializer.validated_data.get('following'))
-        if Follow.objects.filter(
-                user_id=user,
-                following_id=following.id).exists() or user == following.id:
-            return Response(
-                "You can't follow yourself or users you already follow",
-                status=status.HTTP_400_BAD_REQUEST)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers)
+    http_method_names = ['get', 'post']
 
     def get_queryset(self):
-        return Follow.objects.filter(user=self.request.user)
+        return self.request.user.follower
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
