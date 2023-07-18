@@ -1,6 +1,6 @@
-# API Yatube
+# API NetConnect
 
-Данный репозиторий включает в себя REST-API для платформы Yatube.
+Данный репозиторий включает в себя REST-API для платформы NetConnect.
 
 
 ## Зависимости
@@ -19,7 +19,7 @@ requests 2.26.0
 
 ## Установка
 
-Клонируйте репозиторий коммандой `git clone git@github.com:mxstrv/yatube_project.git`
+Клонируйте репозиторий коммандой `git clone git@github.com:mxstrv/api_netconnect.git`
 
 Создайте виртуальное окружение   `python3 -m venv venv`
 
